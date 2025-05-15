@@ -57,4 +57,5 @@ The algorithm uses efficient NumPy operations for grid processing and BFS (or op
    - `info_dict['gain']`
    - `info_dict['distance_cost']`
    - `info_dict['turning_cost']`
+   - `info_dict['elapsed_ms']`
 3. Pass the goal cell to a path planner for trajectory generation.
