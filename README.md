@@ -47,7 +47,7 @@ Adjustable parameters at the top of the implementation:
 - `debug_mode`: if `true`, returns utility breakdown alongside the best cell
 - `max_runtime_ms`: target computation time per update (e.g., 100 ms for 10 Hz operation)
 
-The algorithm uses efficient NumPy operations for grid processing and BFS (or optimized labeling) for clustering. On typical student-grade hardware, it should comfortably run under the specified time budget.
+The algorithm uses efficient NumPy operations for grid processing and BFS (or optimized labeling) for clustering. However, especially on cheaper hardware, it is highly suggested that the max runtime be manually tuned.
 
 ## Usage
 
