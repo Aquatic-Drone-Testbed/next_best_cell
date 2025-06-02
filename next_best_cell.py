@@ -2,6 +2,8 @@ import time
 import math
 import numpy as np
 
+import re
+import os
 
 def select_next_frontier(pose, graph,
                          lambda_coeff=1.0,
@@ -149,3 +151,34 @@ def select_next_frontier(pose, graph,
         return best_cell, best_info
     else:
         return best_cell
+        
+pattern = r'(\d+)\t\((\d+),(\d+)\)\t(-?\d+\.\d+)'
+
+with open('/home/seamate1/ControlStationFiles/NAV2_USV/map/current_pose_estimation.txt', 'r') as file:
+    content = file.read()
+
+matches = re.findall(pattern, content)
+
+pose_list = [(int(a), (float(b)), (float(c)), float(d)*math.pi/180.0) for a, b, c, d in matches]
+pose = (pose_list[0][1],pose_list[0][2],pose_list[0][3])
+
+np_map = np.load('/home/seamate1/ControlStationFiles/NAV2_USV/map/curr_stitched_map_times_counted.npy')             # shape (H, W)
+np_map = np.flipud(np_map)
+
+np2_map = np.load('/home/seamate1/ControlStationFiles/NAV2_USV/map/curr_stitched_map_times_viewed.npy')             # shape (H, W)
+np2_map = np.flipud(np2_map)
+
+stacked_array = np.stack((np_map, np2_map), axis=2)
+
+print(pose)
+#print(stacked_array)
+#print(select_next_frontier(pose, stacked_array))
+goal = select_next_frontier(pose, stacked_array)
+goal = (float(goal[0]),float(goal[1]))
+position_str = f"{goal}"
+print(position_str)
+
+latest_pose = f"{0}\t{position_str}\t{0.0}\n"
+if latest_pose:
+    with open('/home/seamate1/ControlStationFiles/NAV2_USV/map/goal_pose.txt', 'w') as goal_pose_f:
+        goal_pose_f.write(latest_pose)
